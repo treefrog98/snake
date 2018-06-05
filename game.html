@@ -1,0 +1,126 @@
+<!-- Create the canvas size for the game  (625 x 625) -->
+
+<canvas id = "snake_platform" width = "625" height = "625" ></canvas>
+
+<!-- Script for the snake -->
+
+<script>
+window.onload = function(){
+  // get info from the canvas part of the document
+  snake_canvas = document.getElementById("snake_platform");
+  // get a 2-D rendering
+  ctx = canvas.getContext('2d');
+  // keys configuration
+  document.addEventListener("keydown",push);
+  // timer for the game (13 milliseconds)
+  setInterval(game,1000/13);
+}
+var horizontal_velocity = 0;
+var vertical_velocity = 0;
+// initial starting position (25,25)
+var player_position_horizontal = 25;
+var player_position_vertical = 25;
+
+// grid
+var grid_count = 25;
+var tile_count = 25;
+
+// gold (thing to find) initial placement
+var gold_posX = 17;
+var gold_posY = 17;
+
+array = []
+tail = 5;
+
+// function that says what to do when keys are pressed
+function push(eventParam){
+    switch(eventParam.keyCode){
+      // cases for all the arrow keys (37-40)
+
+      // left
+      case 37:
+        horizontal_velocity -= 1;
+        vertical_velocity=0;
+        break;
+
+      // up
+      case 38:
+        horizontal_velocity=0;
+        vertical_velocity+=1;
+        break;
+
+      // right
+      case 39:
+        horizontal_velocity+=1;
+        vertical_velocity=0;
+        break;
+
+      // down
+      case 40:
+        horizontal_velocity=0;
+        vertical_velocity-=1;
+        break;
+    }
+}
+function game(){
+  player_position_horizontal += horizontal_velocity;
+  player_position_vertical += vertical_velocity;
+
+  // base cases
+  if(player_position_vertical < 0){
+    player_position_vertical = tile_count-1;
+  }
+  // reset
+  if(player_position_vertical > tile_count-1){
+    player_position_vertical = 0;
+  }
+  if(player_position_horizontal < 0){
+    player_position_horizontal = tile_count-1;
+  }
+  // reset
+  if(player_position_horizontal > tile_count-1){
+    player_position_horizontal = 0;
+  }
+
+  ctx.fillStyle = "brown";
+  ctx.fillRect = (0,0,snake_canvas.width,snake_canvas.height);
+
+
+  ctx.fillStyle = "lime";
+  for(let i = 0; i < array.length;++i){
+      ctx.fillRect = (array[i].gold_posX*grid_count,array[i].gold_posY*grid_count, grid_count-3, grid_count-3);
+      if(array[i].gold_posX == player_position_horizontal && array[i].gold_posY == player_position_vertical){
+        // reset the tail length (touching)
+        tail = 5;
+      }
+      // add onto the snake
+      array.push({x:player_position_horizontal, y: player_position_vertical});
+
+      // trim tail
+      while(array.length > tail){
+        array.shift();
+      }
+
+      // gold
+      if(gold_posX== player_position_horizontal && gold_posY== player_position_vertical){
+        // reset the tail length (touching)
+        tail+=1;
+        // randomize new location of the gold
+        gold_posX = Math.floor(Math.random()*tile_count);
+        gold_posY = Math.floor(Math.random()*tile_count);
+      }
+  }
+
+
+
+  ctx.fillStyle = "red";
+  ctx.fillRect = (gold_posX*grid_count, gold_posY*grid_count, grid_count-3, grid_count-3);
+
+
+
+}
+
+
+
+
+</script>
